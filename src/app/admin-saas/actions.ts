@@ -151,7 +151,7 @@ export async function createPlan(data: any) {
 // AUDIT LOGS
 // =============================================
 
-export async function getAuditLogs() {
+export async function getAuditLogs(limit: number = 100) {
     const supabase = await createClient()
     // @ts-ignore
     const { data, error } = await (supabase.from('audit_logs') as any)
@@ -160,7 +160,7 @@ export async function getAuditLogs() {
             tenants (nome_empresa)
         `)
         .order('created_at', { ascending: false })
-        .limit(100)
+        .limit(limit)
 
     if (error) return []
     return data
