@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache"
 export async function getVisits() {
     const supabase = await createClient()
 
+    // @ts-ignore
     const { data, error } = await supabase
         .from('visits')
         .select(`

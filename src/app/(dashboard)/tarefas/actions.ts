@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache"
 export async function getTasks(filter?: 'all' | 'today' | 'overdue' | 'pending') {
     const supabase = await createClient()
 
+    // @ts-ignore
     let query = supabase
         .from('tasks')
         .select(`

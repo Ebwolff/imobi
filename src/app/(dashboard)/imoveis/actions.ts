@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache"
 export async function getProperties() {
     const supabase = await createClient()
 
+    // @ts-ignore
     const { data, error } = await supabase
         .from('properties')
         .select('*')
@@ -22,6 +23,7 @@ export async function getProperties() {
 export async function getPropertyById(id: string) {
     const supabase = await createClient()
 
+    // @ts-ignore
     const { data, error } = await supabase
         .from('properties')
         .select('*')

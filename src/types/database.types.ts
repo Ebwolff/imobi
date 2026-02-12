@@ -45,6 +45,7 @@ export interface Database {
                 Row: {
                     id: string
                     user_id: string | null
+                    tenant_id: string | null
                     stage_id: string | null
                     name: string
                     email: string | null
@@ -59,6 +60,7 @@ export interface Database {
                 Insert: {
                     id?: string
                     user_id?: string | null
+                    tenant_id?: string | null
                     stage_id?: string | null
                     name: string
                     email?: string | null
@@ -73,6 +75,7 @@ export interface Database {
                 Update: {
                     id?: string
                     user_id?: string | null
+                    tenant_id?: string | null
                     stage_id?: string | null
                     name?: string
                     email?: string | null
@@ -357,6 +360,227 @@ export interface Database {
                     ativo?: boolean
                     last_login?: string | null
                     created_at?: string
+                }
+            }
+            properties: {
+                Row: {
+                    id: string
+                    user_id: string | null
+                    tenant_id: string | null
+                    titulo: string
+                    tipo: string
+                    finalidade: string
+                    endereco: string | null
+                    bairro: string | null
+                    cidade: string
+                    estado: string
+                    area_total: number | null
+                    quartos: number
+                    banheiros: number
+                    vagas: number
+                    valor: number
+                    descricao: string | null
+                    status: string
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    user_id?: string | null
+                    tenant_id?: string | null
+                    titulo: string
+                    tipo: string
+                    finalidade?: string
+                    endereco?: string | null
+                    bairro?: string | null
+                    cidade: string
+                    estado?: string
+                    area_total?: number | null
+                    quartos?: number
+                    banheiros?: number
+                    vagas?: number
+                    valor: number
+                    descricao?: string | null
+                    status?: string
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    user_id?: string | null
+                    tenant_id?: string | null
+                    titulo?: string
+                    tipo?: string
+                    finalidade?: string
+                    endereco?: string | null
+                    bairro?: string | null
+                    cidade?: string
+                    estado?: string
+                    area_total?: number | null
+                    quartos?: number
+                    banheiros?: number
+                    vagas?: number
+                    valor?: number
+                    descricao?: string | null
+                    status?: string
+                    created_at?: string
+                    updated_at?: string
+                }
+            }
+            deals: {
+                Row: {
+                    id: string
+                    user_id: string | null
+                    tenant_id: string | null
+                    client_id: string | null
+                    property_id: string | null
+                    titulo: string
+                    tipo: string
+                    valor_proposta: number | null
+                    comissao_percentual: number
+                    comissao_valor: number | null
+                    status: string
+                    data_prevista_fechamento: string | null
+                    data_fechamento: string | null
+                    motivo_perda: string | null
+                    observacoes: string | null
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    user_id?: string | null
+                    tenant_id?: string | null
+                    client_id?: string | null
+                    property_id?: string | null
+                    titulo: string
+                    tipo?: string
+                    valor_proposta?: number | null
+                    comissao_percentual?: number
+                    comissao_valor?: number | null
+                    status?: string
+                    data_prevista_fechamento?: string | null
+                    data_fechamento?: string | null
+                    motivo_perda?: string | null
+                    observacoes?: string | null
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    user_id?: string | null
+                    tenant_id?: string | null
+                    client_id?: string | null
+                    property_id?: string | null
+                    titulo?: string
+                    tipo?: string
+                    valor_proposta?: number | null
+                    comissao_percentual?: number
+                    comissao_valor?: number | null
+                    status?: string
+                    data_prevista_fechamento?: string | null
+                    data_fechamento?: string | null
+                    motivo_perda?: string | null
+                    observacoes?: string | null
+                    created_at?: string
+                    updated_at?: string
+                }
+            }
+            tasks: {
+                Row: {
+                    id: string
+                    user_id: string | null
+                    tenant_id: string | null
+                    client_id: string | null
+                    lead_id: string | null
+                    deal_id: string | null
+                    titulo: string
+                    descricao: string | null
+                    tipo: string
+                    prioridade: string
+                    data_vencimento: string | null
+                    data_conclusao: string | null
+                    status: string
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    user_id?: string | null
+                    tenant_id?: string | null
+                    client_id?: string | null
+                    lead_id?: string | null
+                    deal_id?: string | null
+                    titulo: string
+                    descricao?: string | null
+                    tipo?: string
+                    prioridade?: string
+                    data_vencimento?: string | null
+                    data_conclusao?: string | null
+                    status?: string
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    user_id?: string | null
+                    tenant_id?: string | null
+                    client_id?: string | null
+                    lead_id?: string | null
+                    deal_id?: string | null
+                    titulo?: string
+                    descricao?: string | null
+                    tipo?: string
+                    prioridade?: string
+                    data_vencimento?: string | null
+                    data_conclusao?: string | null
+                    status?: string
+                    created_at?: string
+                    updated_at?: string
+                }
+            }
+            visits: {
+                Row: {
+                    id: string
+                    user_id: string | null
+                    tenant_id: string | null
+                    client_id: string | null
+                    property_id: string | null
+                    data_visita: string
+                    duracao_minutos: number
+                    feedback: string | null
+                    observacoes: string | null
+                    status: string
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    user_id?: string | null
+                    tenant_id?: string | null
+                    client_id?: string | null
+                    property_id?: string | null
+                    data_visita: string
+                    duracao_minutos?: number
+                    feedback?: string | null
+                    observacoes?: string | null
+                    status?: string
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    user_id?: string | null
+                    tenant_id?: string | null
+                    client_id?: string | null
+                    property_id?: string | null
+                    data_visita?: string
+                    duracao_minutos?: number
+                    feedback?: string | null
+                    observacoes?: string | null
+                    status?: string
+                    created_at?: string
+                    updated_at?: string
                 }
             }
         }

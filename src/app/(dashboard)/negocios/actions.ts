@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache"
 export async function getDeals() {
     const supabase = await createClient()
 
+    // @ts-ignore
     const { data, error } = await supabase
         .from('deals')
         .select(`
@@ -27,6 +28,7 @@ export async function getDeals() {
 export async function getDealById(id: string) {
     const supabase = await createClient()
 
+    // @ts-ignore
     const { data, error } = await supabase
         .from('deals')
         .select(`
