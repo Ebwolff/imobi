@@ -42,25 +42,18 @@ export async function middleware(request: NextRequest) {
     const isAuthPage = path.startsWith("/auth");
     const isAdminSaasPage = path.startsWith("/admin-saas");
     const isAdminSaasLoginPage = path === "/admin-saas/login";
-    const isApiDebug = path.startsWith("/api/debug");
-    const isApiCaptureUuid = path.startsWith("/api/capture-uuid");
 
-    // 1. API Debug Protection (Allow public during debug)
-    if (isApiDebug || isApiCaptureUuid) {
-        return response;
-    }
-
-    // 2. Admin SaaS Protection
+    // 1. Admin SaaS Protection
     if (!user && isAdminSaasPage && !isAdminSaasLoginPage) {
         return NextResponse.redirect(new URL("/admin-saas/login", request.url));
     }
 
-    // 3. CRM Protection (Default)
+    // 2. CRM Protection (Default)
     if (!user && !isAuthPage && !isAdminSaasPage) {
         return NextResponse.redirect(new URL("/auth/login", request.url));
     }
 
-    // 4. Redirect away from auth pages if logged in
+    // 3. Redirect away from auth pages if logged in
     if (user) {
         if (isAuthPage) {
             return NextResponse.redirect(new URL("/", request.url));
