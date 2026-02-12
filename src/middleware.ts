@@ -43,9 +43,10 @@ export async function middleware(request: NextRequest) {
     const isAdminSaasPage = path.startsWith("/admin-saas");
     const isAdminSaasLoginPage = path === "/admin-saas/login";
     const isApiDebug = path.startsWith("/api/debug");
+    const isApiCaptureUuid = path.startsWith("/api/capture-uuid");
 
     // 1. API Debug Protection (Allow public during debug)
-    if (isApiDebug) {
+    if (isApiDebug || isApiCaptureUuid) {
         return response;
     }
 
