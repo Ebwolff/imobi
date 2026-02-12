@@ -191,14 +191,14 @@ export default async function DashboardPage() {
                                             <div className="flex items-center gap-3">
                                                 <div className="h-9 w-9 rounded-full bg-zinc-800 flex items-center justify-center">
                                                     <span className="text-xs font-semibold text-zinc-400">
-                                                        {lead.nome?.substring(0, 2).toUpperCase()}
+                                                        {lead.name?.substring(0, 2).toUpperCase()}
                                                     </span>
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-medium text-white">{lead.nome}</p>
+                                                    <p className="text-sm font-medium text-white">{lead.name}</p>
                                                     <div className="flex items-center gap-2 text-xs text-zinc-500">
                                                         <Phone className="h-3 w-3" />
-                                                        <span>{lead.telefone || 'Sem telefone'}</span>
+                                                        <span>{lead.phone || 'Sem telefone'}</span>
                                                     </div>
                                                 </div>
                                             </div>

@@ -583,6 +583,29 @@ export interface Database {
                     updated_at?: string
                 }
             }
+            interactions: {
+                Row: {
+                    id: string
+                    lead_id: string
+                    type: string
+                    content: string
+                    created_at: string
+                }
+                Insert: {
+                    id?: string
+                    lead_id: string
+                    type: string
+                    content: string
+                    created_at?: string
+                }
+                Update: {
+                    id?: string
+                    lead_id?: string
+                    type?: string
+                    content?: string
+                    created_at?: string
+                }
+            }
         }
     }
 }
