@@ -9,7 +9,7 @@ export async function checkSaaSAdmin() {
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
-        redirect('/admin-saas/login')
+        return { isError: true, data: { message: "User not authenticated", userId: null, email: null } }
     }
 
     // Check if user is in saas_users with correct role
@@ -19,20 +19,18 @@ export async function checkSaaSAdmin() {
         .single()
 
     if (error || !saasUser || !['owner', 'admin_saas', 'suporte'].includes(saasUser.role)) {
-        console.error("SaaS Admin Check Failed:", {
+        const errorData = {
             userId: user.id,
             email: user.email,
             found: !!saasUser,
             role: saasUser?.role,
             dbError: error
-        })
-
-        // Se for o e-mail do dono e não foi encontrado, redireciona para uma rota de "auto-sync" ou volta para o CRM
-        // Por agora, redireciona para o CRM para não ficar na tela vermelha
-        redirect('/')
+        }
+        console.error("SaaS Admin Check Failed:", errorData)
+        return { isError: true, data: errorData }
     }
 
-    return user
+    return { user }
 }
 
 // =============================================
