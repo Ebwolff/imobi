@@ -9,7 +9,7 @@ export async function checkSaaSAdmin() {
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
-        redirect('/admin-saas/login')
+        return { isError: true, data: { message: "User not authenticated", userId: null, email: null } }
     }
 
     // Check if user is in saas_users with correct role
@@ -19,23 +19,21 @@ export async function checkSaaSAdmin() {
         .single()
 
     if (error || !saasUser || !['owner', 'admin_saas', 'suporte'].includes(saasUser.role)) {
-        console.error("SaaS Admin Check Failed:", {
+        const errorData = {
             userId: user.id,
             email: user.email,
             found: !!saasUser,
             role: saasUser?.role,
             dbError: error
-        })
-        // If not a global admin, redirect to CRM main page
-        redirect('/')
+        }
+        console.error("SaaS Admin Check Failed:", errorData)
+        return { isError: true, data: errorData }
     }
 
-    return user
+    return { user }
 }
 
-// =============================================
-// TENANT MANAGEMENT (Admin Only)
-// =============================================
+// ... rest of the file remains the same ...
 
 export async function getAllTenants() {
     const supabase = await createClient()
@@ -136,10 +134,6 @@ export async function createTenant(data: any) {
     return { success: true, data: tenant }
 }
 
-// =============================================
-// SUBSCRIPTIONS & PLANS
-// =============================================
-
 export async function getPlans() {
     const supabase = await createClient()
     const { data, error } = await (supabase.from('plans') as any).select('*').order('valor_mensal', { ascending: true })
@@ -170,10 +164,6 @@ export async function createPlan(formData: FormData) {
     revalidatePath('/admin-saas/plans')
     return { success: true }
 }
-
-// =============================================
-// AUDIT LOGS
-// =============================================
 
 export async function getAuditLogs(limit: number = 100) {
     const supabase = await createClient()
