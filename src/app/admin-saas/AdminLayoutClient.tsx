@@ -153,13 +153,14 @@ export default function AdminLayoutClient({
                                     <div className="h-7 w-7 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center">
                                         <span className="text-amber-500 font-semibold text-xs">M</span>
                                     </div>
-                                    <span className="text-sm font-medium hidden md:block">Master Admin</span>
+                                    <span className="text-sm font-medium hidden md:block">Eberscaow Master</span>
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-56 bg-zinc-900 border-zinc-800">
-                                <DropdownMenuLabel className="text-zinc-400">
-                                    {userEmail || 'admin@master.com'}
-                                </DropdownMenuLabel>
+                                <div className="flex flex-col">
+                                    <span className="text-xs font-semibold text-amber-500 uppercase tracking-wider">Owner</span>
+                                    <span className="text-sm text-zinc-300 truncate">{userEmail || 'eberscaow@gmail.com'}</span>
+                                </div>
                                 <DropdownMenuSeparator className="bg-zinc-800" />
                                 <DropdownMenuItem className="text-zinc-300 focus:bg-zinc-800 cursor-pointer">
                                     <Settings className="h-4 w-4 mr-2" />
