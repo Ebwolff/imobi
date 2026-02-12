@@ -120,11 +120,13 @@ export async function convertLeadToClient(leadId: string) {
     const supabase = await createSupabaseClient()
 
     // Get lead data
-    const { data: lead, error: leadError } = await supabase
+    const { data: leadData, error: leadError } = await supabase
         .from('leads')
         .select('*')
         .eq('id', leadId)
         .single()
+
+    const lead = leadData as any
 
     if (leadError || !lead) {
         return { error: "Lead não encontrado" }
@@ -135,11 +137,11 @@ export async function convertLeadToClient(leadId: string) {
     // Create client from lead
     // @ts-ignore
     const { error } = await supabase.from('clients').insert({
-        user_id: userData?.user?.id,
+        user_id: userData?.user?.id || null,
         lead_id: leadId,
-        nome: lead.name,
-        email: lead.email,
-        telefone: lead.phone,
+        nome: (lead as any).name,
+        email: (lead as any).email,
+        telefone: (lead as any).phone,
         tipo: 'comprador',
     })
 

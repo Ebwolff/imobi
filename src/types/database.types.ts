@@ -131,6 +131,234 @@ export interface Database {
                     created_at?: string
                 }
             }
+            clients: {
+                Row: {
+                    id: string
+                    user_id: string | null
+                    lead_id: string | null
+                    nome: string
+                    email: string | null
+                    telefone: string | null
+                    cpf: string | null
+                    tipo: string
+                    endereco: string | null
+                    bairro: string | null
+                    cidade: string | null
+                    estado: string
+                    observacoes: string | null
+                    ativo: boolean
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    user_id?: string | null
+                    lead_id?: string | null
+                    nome: string
+                    email?: string | null
+                    telefone?: string | null
+                    cpf?: string | null
+                    tipo?: string
+                    endereco?: string | null
+                    bairro?: string | null
+                    cidade?: string | null
+                    estado?: string
+                    observacoes?: string | null
+                    ativo?: boolean
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    user_id?: string | null
+                    lead_id?: string | null
+                    nome?: string
+                    email?: string | null
+                    telefone?: string | null
+                    cpf?: string | null
+                    tipo?: string
+                    endereco?: string | null
+                    bairro?: string | null
+                    cidade?: string | null
+                    estado?: string
+                    observacoes?: string | null
+                    ativo?: boolean
+                    created_at?: string
+                    updated_at?: string
+                }
+            }
+            tenants: {
+                Row: {
+                    id: string
+                    nome_empresa: string
+                    email_principal: string
+                    cnpj: string | null
+                    plano: string
+                    slug: string
+                    status: string
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    nome_empresa: string
+                    email_principal: string
+                    cnpj?: string | null
+                    plano?: string
+                    slug: string
+                    status?: string
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    nome_empresa?: string
+                    email_principal?: string
+                    cnpj?: string | null
+                    plano?: string
+                    slug?: string
+                    status?: string
+                    created_at?: string
+                    updated_at?: string
+                }
+            }
+            plans: {
+                Row: {
+                    id: string
+                    nome: string
+                    slug: string
+                    valor_mensal: number
+                    limite_usuarios: number
+                    limite_leads: number
+                    limite_automacoes: number | null
+                    limite_integracoes: number | null
+                    ativo: boolean
+                    created_at: string
+                }
+                Insert: {
+                    id?: string
+                    nome: string
+                    slug: string
+                    valor_mensal: number
+                    limite_usuarios?: number
+                    limite_leads?: number
+                    limite_automacoes?: number | null
+                    limite_integracoes?: number | null
+                    ativo?: boolean
+                    created_at?: string
+                }
+                Update: {
+                    id?: string
+                    nome?: string
+                    slug?: string
+                    valor_mensal?: number
+                    limite_usuarios?: number
+                    limite_leads?: number
+                    limite_automacoes?: number | null
+                    limite_integracoes?: number | null
+                    ativo?: boolean
+                    created_at?: string
+                }
+            }
+            subscriptions: {
+                Row: {
+                    id: string
+                    tenant_id: string
+                    plan_id: string
+                    status: 'ativa' | 'cancelada' | 'inadimplente' | 'trial'
+                    data_inicio: string
+                    data_fim: string | null
+                    valor: number | null
+                    created_at: string
+                }
+                Insert: {
+                    id?: string
+                    tenant_id: string
+                    plan_id: string
+                    status?: 'ativa' | 'cancelada' | 'inadimplente' | 'trial'
+                    data_inicio: string
+                    data_fim?: string | null
+                    valor?: number | null
+                    created_at?: string
+                }
+                Update: {
+                    id?: string
+                    tenant_id?: string
+                    plan_id?: string
+                    status?: 'ativa' | 'cancelada' | 'inadimplente' | 'trial'
+                    data_inicio?: string
+                    data_fim?: string | null
+                    valor?: number | null
+                    created_at?: string
+                }
+            }
+            audit_logs: {
+                Row: {
+                    id: string
+                    tenant_id: string | null
+                    saas_user_id: string | null
+                    acao: string
+                    entidade: string | null
+                    entidade_id: string | null
+                    detalhes: Json | null
+                    ip: string | null
+                    created_at: string
+                }
+                Insert: {
+                    id?: string
+                    tenant_id?: string | null
+                    saas_user_id?: string | null
+                    acao: string
+                    entidade?: string | null
+                    entidade_id?: string | null
+                    detalhes?: Json | null
+                    ip?: string | null
+                    created_at?: string
+                }
+                Update: {
+                    id?: string
+                    tenant_id?: string | null
+                    saas_user_id?: string | null
+                    acao?: string
+                    entidade?: string | null
+                    entidade_id?: string | null
+                    detalhes?: Json | null
+                    ip?: string | null
+                    created_at?: string
+                }
+            }
+            saas_users: {
+                Row: {
+                    id: string
+                    email: string
+                    nome: string
+                    senha_hash: string
+                    role: 'owner' | 'admin_saas' | 'suporte'
+                    ativo: boolean
+                    last_login: string | null
+                    created_at: string
+                }
+                Insert: {
+                    id?: string
+                    email: string
+                    nome: string
+                    senha_hash: string
+                    role?: 'owner' | 'admin_saas' | 'suporte'
+                    ativo?: boolean
+                    last_login?: string | null
+                    created_at?: string
+                }
+                Update: {
+                    id?: string
+                    email?: string
+                    nome?: string
+                    senha_hash?: string
+                    role?: 'owner' | 'admin_saas' | 'suporte'
+                    ativo?: boolean
+                    last_login?: string | null
+                    created_at?: string
+                }
+            }
         }
     }
 }
