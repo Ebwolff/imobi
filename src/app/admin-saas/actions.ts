@@ -109,10 +109,14 @@ export async function updateTenant(id: string, updates: any) {
         .update(updates)
         .eq('id', id)
 
-    if (error) throw error
+    if (error) {
+        console.error("Error updating tenant:", error)
+        return { error: error.message }
+    }
 
     revalidatePath('/admin-saas/tenants')
     revalidatePath(`/admin-saas/tenants/${id}`)
+    return { success: true }
 }
 
 export async function createTenant(data: any) {
@@ -123,10 +127,13 @@ export async function createTenant(data: any) {
         .select()
         .single()
 
-    if (error) throw error
+    if (error) {
+        console.error("Error creating tenant:", error)
+        return { error: error.message }
+    }
 
     revalidatePath('/admin-saas/tenants')
-    return tenant
+    return { success: true, data: tenant }
 }
 
 // =============================================
@@ -140,11 +147,28 @@ export async function getPlans() {
     return data
 }
 
-export async function createPlan(data: any) {
+export async function createPlan(formData: FormData) {
     const supabase = await createClient()
+
+    const data = {
+        nome: formData.get('nome'),
+        valor_mensal: parseFloat(formData.get('valor_mensal') as string),
+        limite_usuarios: parseInt(formData.get('limite_usuarios') as string || '0'),
+        limite_leads: parseInt(formData.get('limite_leads') as string || '0'),
+        limite_automacoes: parseInt(formData.get('limite_automacoes') as string || '0'),
+        limite_integracoes: parseInt(formData.get('limite_integracoes') as string || '0'),
+        slug: (formData.get('nome') as string)?.toLowerCase().replace(/\s+/g, '_')
+    }
+
     const { error } = await (supabase.from('plans') as any).insert(data)
-    if (error) throw error
+
+    if (error) {
+        console.error("Error creating plan:", error)
+        return { error: error.message }
+    }
+
     revalidatePath('/admin-saas/plans')
+    return { success: true }
 }
 
 // =============================================
