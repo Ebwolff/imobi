@@ -51,6 +51,9 @@ async function getDashboardData() {
         .order('data_vencimento', { ascending: true })
         .limit(5)
 
+    // Debug schema visibility
+    const { error: saasError } = await (supabase.from('saas_users') as any).select('role').limit(1)
+
     return {
         stats: {
             totalLeads: totalLeads || 0,
@@ -60,7 +63,11 @@ async function getDashboardData() {
             pendingTasks: pendingCount || 0
         },
         recentLeads: recentLeads || [],
-        pendingTasks: pendingTasks || []
+        pendingTasks: pendingTasks || [],
+        debug: {
+            saas_users_visible: !saasError || saasError.code !== 'PGRST205',
+            saas_error: saasError
+        }
     }
 }
 
@@ -73,7 +80,8 @@ const statusConfig: Record<string, { color: string; bg: string }> = {
 }
 
 export default async function DashboardPage() {
-    const { stats, recentLeads, pendingTasks } = await getDashboardData()
+    const data = await getDashboardData()
+    const { stats, recentLeads, pendingTasks } = data
 
     return (
         <div className="p-6 space-y-6 max-w-7xl mx-auto">
@@ -94,7 +102,7 @@ export default async function DashboardPage() {
             </div>
 
             {/* KPI Cards */}
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card className="bg-zinc-900/50 border-zinc-800/50">
                     <CardContent className="pt-5">
                         <div className="flex items-start justify-between">
@@ -160,9 +168,9 @@ export default async function DashboardPage() {
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Recent Leads */}
-                <Card className="col-span-2 bg-zinc-900/50 border-zinc-800/50">
+                <Card className="md:col-span-2 bg-zinc-900/50 border-zinc-800/50">
                     <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
                             <CardTitle className="text-sm font-medium text-zinc-400">Últimos Leads</CardTitle>
@@ -265,7 +273,7 @@ export default async function DashboardPage() {
             {/* Quick Actions */}
             <div>
                 <h3 className="text-sm font-medium text-zinc-400 mb-3">Ações Rápidas</h3>
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <Link href="/leads" className="group">
                         <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-zinc-900/50 border border-zinc-800/50 hover:border-sky-500/30 hover:bg-sky-500/5 transition-all">
                             <div className="h-10 w-10 rounded-lg bg-sky-500/10 flex items-center justify-center group-hover:bg-sky-500/20 transition-colors">
@@ -298,6 +306,21 @@ export default async function DashboardPage() {
                             <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">Nova Negociação</span>
                         </div>
                     </Link>
+                </div>
+            </div>
+
+            {/* Debug Footer (Temporary) */}
+            <div className="mt-8 pt-8 border-t border-zinc-800">
+                <div className="flex items-center gap-4 text-[10px] font-mono text-zinc-600">
+                    <span>SCHEMA_DEBUG:</span>
+                    <span className={data.debug.saas_users_visible ? "text-emerald-500" : "text-red-500"}>
+                        saas_users: {data.debug.saas_users_visible ? "VISIBLE" : "HIDDEN (PGRST205)"}
+                    </span>
+                    {data.debug.saas_error && (
+                        <span className="text-red-900 opacity-50">
+                            Error: {JSON.stringify(data.debug.saas_error)}
+                        </span>
+                    )}
                 </div>
             </div>
         </div>
