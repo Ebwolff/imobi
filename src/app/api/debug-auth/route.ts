@@ -1,30 +1,34 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from 'next/server'
 
 export async function GET() {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
 
-    const supabase = createClient(supabaseUrl, serviceRoleKey)
+    let saasUser = null
+    let dbError = null
 
-    // 1. Get all SaaS users
-    const { data: saasUsers } = await supabase
-        .from('saas_users')
-        .select('*')
+    if (user) {
+        // Check saas_users (this works if RLS policy allows it)
+        const result = await (supabase.from('saas_users') as any)
+            .select('*')
+            .eq('id', user.id)
+            .single()
 
-    // 2. Get some Auth users to compare (limited for security)
-    const { data: authUsers } = await supabase.auth.admin.listUsers()
+        saasUser = result.data
+        dbError = result.error
+    }
 
     const debugData = {
         timestamp: new Date().toISOString(),
-        saas_users_count: saasUsers?.length || 0,
-        saas_users_list: saasUsers?.map(u => ({ id: u.id, email: u.email, role: u.role })),
-        auth_users_found: authUsers?.users?.map(u => ({ id: u.id, email: u.email })),
-        match_check: saasUsers?.map(su => ({
-            email: su.email,
-            id: su.id,
-            exists_in_auth: authUsers?.users?.some(au => au.id === su.id)
-        }))
+        session: user ? {
+            id: user.id,
+            email: user.email,
+            role: user.role
+        } : 'no session',
+        saas_record: saasUser,
+        db_error: dbError,
+        note: "If saas_record is null and session is active, the UUID in saas_users does not match the session ID."
     }
 
     return NextResponse.json(debugData)
