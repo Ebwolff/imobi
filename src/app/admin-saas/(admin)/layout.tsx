@@ -7,20 +7,24 @@ export default async function AdminSaasLayout({ children }: { children: React.Re
     // 1. Mandatory Security Check
     const result = await checkSaaSAdmin()
 
-    // 2. Production Flow
-    // If checkSaaSAdmin returns diagnostic data (isError), we redirect to login or CRM
+    // 2. Safety Branch
+    // If it's an error object, we handle redirects
     if ('isError' in result && result.isError) {
-        // If not authenticated, redirect to admin login
-        if (result.data.message === "User not authenticated") {
+        if (result.data?.message === "User not authenticated") {
             redirect('/admin-saas/login')
         }
-        // If authenticated but not authorized, redirect to CRM
+        // Case: Authenticated but not in saas_users or wrong role
         redirect('/')
     }
 
-    const { user } = result as any
+    // 3. Success Branch
+    // At this point, result MUST contain the user object
+    const user = (result as any).user
 
-    // @ts-ignore - The user returned by checkSaaSAdmin is the auth user
+    if (!user || !user.email) {
+        redirect('/admin-saas/login')
+    }
+
     return (
         <AdminLayoutClient userEmail={user.email}>
             {children}

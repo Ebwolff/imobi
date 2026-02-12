@@ -2,35 +2,38 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
 
 export async function checkSaaSAdmin() {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    try {
+        const supabase = await createClient()
+        const { data: { user } } = await supabase.auth.getUser()
 
-    if (!user) {
-        return { isError: true, data: { message: "User not authenticated", userId: null, email: null } }
-    }
-
-    // Check if user is in saas_users with correct role
-    const { data: saasUser, error } = await (supabase.from('saas_users') as any)
-        .select('role')
-        .eq('id', user.id)
-        .single()
-
-    if (error || !saasUser || !['owner', 'admin_saas', 'suporte'].includes(saasUser.role)) {
-        const errorData = {
-            userId: user.id,
-            email: user.email,
-            found: !!saasUser,
-            role: saasUser?.role,
-            dbError: error
+        if (!user) {
+            return { isError: true, data: { message: "User not authenticated" } }
         }
-        console.error("SaaS Admin Check Failed:", errorData)
-        return { isError: true, data: errorData }
-    }
 
-    return { user }
+        // Check if user is in saas_users with correct role
+        const { data: saasUser, error } = await (supabase.from('saas_users') as any)
+            .select('role')
+            .eq('id', user.id)
+            .single()
+
+        if (error || !saasUser || !['owner', 'admin_saas', 'suporte'].includes(saasUser.role)) {
+            return {
+                isError: true,
+                data: {
+                    message: "User not authorized",
+                    userId: user.id,
+                    email: user.email,
+                    dbError: error
+                }
+            }
+        }
+
+        return { user }
+    } catch (e: any) {
+        return { isError: true, data: { message: "Internal Server Error", error: e.message } }
+    }
 }
 
 // =============================================
@@ -39,8 +42,6 @@ export async function checkSaaSAdmin() {
 
 export async function getAllTenants() {
     const supabase = await createClient()
-
-    // @ts-ignore
     const { data, error } = await (supabase.from('tenants') as any)
         .select(`
             *,
@@ -53,18 +54,12 @@ export async function getAllTenants() {
         `)
         .order('created_at', { ascending: false })
 
-    if (error) {
-        console.error("Error loading tenants:", error)
-        return []
-    }
-
+    if (error) return []
     return data || []
 }
 
 export async function getTenantById(id: string) {
     const supabase = await createClient()
-
-    // @ts-ignore
     const { data, error } = await (supabase.from('tenants') as any)
         .select(`
             *,
@@ -76,18 +71,12 @@ export async function getTenantById(id: string) {
         .eq('id', id)
         .single()
 
-    if (error) {
-        console.error("Error loading tenant:", error)
-        return null
-    }
-
+    if (error) return null
     return data
 }
 
 export async function getTenantStats() {
     const supabase = await createClient()
-
-    // @ts-ignore
     const { data: tenants, error } = await (supabase.from('tenants') as any).select('status, created_at')
 
     if (error) return { total: 0, active: 0, newThisMonth: 0 }
@@ -104,15 +93,11 @@ export async function getTenantStats() {
 
 export async function updateTenant(id: string, updates: any) {
     const supabase = await createClient()
-
     const { error } = await (supabase.from('tenants') as any)
         .update(updates)
         .eq('id', id)
 
-    if (error) {
-        console.error("Error updating tenant:", error)
-        return { error: error.message }
-    }
+    if (error) return { error: error.message }
 
     revalidatePath('/admin-saas/tenants')
     revalidatePath(`/admin-saas/tenants/${id}`)
@@ -121,16 +106,12 @@ export async function updateTenant(id: string, updates: any) {
 
 export async function createTenant(data: any) {
     const supabase = await createClient()
-
     const { data: tenant, error } = await (supabase.from('tenants') as any)
         .insert(data)
         .select()
         .single()
 
-    if (error) {
-        console.error("Error creating tenant:", error)
-        return { error: error.message }
-    }
+    if (error) return { error: error.message }
 
     revalidatePath('/admin-saas/tenants')
     return { success: true, data: tenant }
@@ -145,7 +126,6 @@ export async function getPlans() {
 
 export async function createPlan(formData: FormData) {
     const supabase = await createClient()
-
     const data = {
         nome: formData.get('nome'),
         valor_mensal: parseFloat(formData.get('valor_mensal') as string),
@@ -157,11 +137,7 @@ export async function createPlan(formData: FormData) {
     }
 
     const { error } = await (supabase.from('plans') as any).insert(data)
-
-    if (error) {
-        console.error("Error creating plan:", error)
-        return { error: error.message }
-    }
+    if (error) return { error: error.message }
 
     revalidatePath('/admin-saas/plans')
     return { success: true }
@@ -169,7 +145,6 @@ export async function createPlan(formData: FormData) {
 
 export async function getAuditLogs(limit: number = 100) {
     const supabase = await createClient()
-    // @ts-ignore
     const { data, error } = await (supabase.from('audit_logs') as any)
         .select(`
             *,
