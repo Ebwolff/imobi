@@ -42,8 +42,14 @@ export async function middleware(request: NextRequest) {
     const isAuthPage = path.startsWith("/auth");
     const isAdminSaasPage = path.startsWith("/admin-saas");
     const isAdminSaasLoginPage = path === "/admin-saas/login";
+    const isApiCheckTables = path.startsWith("/api/check-tables");
 
-    // 1. Admin SaaS Protection
+    // 1. API Pass-through (Emergency Diagnostics)
+    if (isApiCheckTables) {
+        return response;
+    }
+
+    // 2. Admin SaaS Protection
     if (!user && isAdminSaasPage && !isAdminSaasLoginPage) {
         return NextResponse.redirect(new URL("/admin-saas/login", request.url));
     }
