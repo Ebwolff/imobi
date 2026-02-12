@@ -4,32 +4,29 @@ import { NextResponse } from "next/server"
 export async function GET() {
     try {
         const supabase = await createClient()
+        const { data: { user } } = await supabase.auth.getUser()
 
-        // 1. Check if we can at least reach the DB
-        const { data: health, error: healthError } = await supabase.from('tenants').select('count', { count: 'exact', head: true })
+        if (!user) return NextResponse.json({ error: "No session" }, { status: 401 })
 
-        // 2. Try to verify saas_users specifically
-        const { data: saasCheck, error: saasError } = await supabase.from('saas_users').select('count', { count: 'exact', head: true })
-
-        // 3. Try to get schema information via a generic RPC if exists
-        // (Assuming we might have one, otherwise this will fail gracefully)
+        // 1. Technical Check
+        const { data: saasUser, error: saasError } = await (supabase.from('saas_users') as any)
+            .select('*')
+            .eq('id', user.id)
+            .single()
 
         return NextResponse.json({
-            status: "connected",
-            tenantsTable: {
-                reachable: !healthError,
-                error: healthError
+            sessionUser: {
+                id: user.id,
+                email: user.email
             },
-            saasUsersTable: {
-                reachable: !saasError,
+            saasRecord: {
+                found: !!saasUser,
+                data: saasUser,
                 error: saasError
             },
             timestamp: new Date().toISOString()
         })
     } catch (e: any) {
-        return NextResponse.json({
-            status: "error",
-            error: e.message
-        }, { status: 500 })
+        return NextResponse.json({ error: e.message }, { status: 500 })
     }
 }

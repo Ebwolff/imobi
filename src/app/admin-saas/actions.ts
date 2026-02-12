@@ -9,7 +9,7 @@ export async function checkSaaSAdmin() {
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
-        return { isError: true, data: { message: "User not authenticated", userId: null, email: null } }
+        redirect('/admin-saas/login')
     }
 
     // Check if user is in saas_users with correct role
@@ -19,21 +19,25 @@ export async function checkSaaSAdmin() {
         .single()
 
     if (error || !saasUser || !['owner', 'admin_saas', 'suporte'].includes(saasUser.role)) {
-        const errorData = {
+        console.error("SaaS Admin Check Failed:", {
             userId: user.id,
             email: user.email,
             found: !!saasUser,
             role: saasUser?.role,
             dbError: error
-        }
-        console.error("SaaS Admin Check Failed:", errorData)
-        return { isError: true, data: errorData }
+        })
+
+        // Se for o e-mail do dono e não foi encontrado, redireciona para uma rota de "auto-sync" ou volta para o CRM
+        // Por agora, redireciona para o CRM para não ficar na tela vermelha
+        redirect('/')
     }
 
-    return { user }
+    return user
 }
 
-// ... rest of the file remains the same ...
+// =============================================
+// TENANT MANAGEMENT (Admin Only)
+// =============================================
 
 export async function getAllTenants() {
     const supabase = await createClient()
