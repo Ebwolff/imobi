@@ -38,13 +38,15 @@ export async function middleware(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser();
 
-    const isAuthPage = request.nextUrl.pathname.startsWith("/auth");
-    const isAdminSaasPage = request.nextUrl.pathname.startsWith("/admin-saas");
-    const isAdminSaasLoginPage = request.nextUrl.pathname === "/admin-saas/login";
+    const path = request.nextUrl.pathname;
+    const isAuthPage = path.startsWith("/auth");
+    const isAdminSaasPage = path.startsWith("/admin-saas");
+    const isAdminSaasLoginPage = path === "/admin-saas/login";
+    const isApiDebug = path.startsWith("/api/debug");
 
-    // 1. CRM Protection (Default)
-    if (!user && !isAuthPage && !isAdminSaasPage) {
-        return NextResponse.redirect(new URL("/auth/login", request.url));
+    // 1. API Debug Protection (Allow public during debug)
+    if (isApiDebug) {
+        return response;
     }
 
     // 2. Admin SaaS Protection
@@ -52,7 +54,12 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL("/admin-saas/login", request.url));
     }
 
-    // 3. Redirect away from auth pages if logged in
+    // 3. CRM Protection (Default)
+    if (!user && !isAuthPage && !isAdminSaasPage) {
+        return NextResponse.redirect(new URL("/auth/login", request.url));
+    }
+
+    // 4. Redirect away from auth pages if logged in
     if (user) {
         if (isAuthPage) {
             return NextResponse.redirect(new URL("/", request.url));
