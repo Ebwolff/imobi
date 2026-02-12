@@ -7,8 +7,7 @@ export async function getVisits() {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { data, error } = await supabase
-        .from('visits')
+    const { data, error } = await (supabase.from('visits') as any)
         .select(`
             *,
             client:clients(id, nome),
@@ -44,7 +43,7 @@ export async function createVisit(formData: FormData) {
     }
 
     // @ts-ignore
-    const { error } = await supabase.from('visits').insert(visitData)
+    const { error } = await (supabase.from('visits') as any).insert(visitData)
 
     if (error) {
         console.error("Error creating visit:", error)
@@ -62,7 +61,7 @@ export async function updateVisitStatus(id: string, status: string, feedback?: s
     if (feedback) updateData.feedback = feedback
 
     // @ts-ignore
-    const { error } = await supabase.from('visits').update(updateData).eq('id', id)
+    const { error } = await (supabase.from('visits') as any).update(updateData).eq('id', id)
 
     if (error) {
         console.error("Error updating visit:", error)
@@ -77,7 +76,7 @@ export async function deleteVisit(id: string) {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { error } = await supabase.from('visits').delete().eq('id', id)
+    const { error } = await (supabase.from('visits') as any).delete().eq('id', id)
 
     if (error) {
         console.error("Error deleting visit:", error)

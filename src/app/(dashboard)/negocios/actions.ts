@@ -7,8 +7,7 @@ export async function getDeals() {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { data, error } = await supabase
-        .from('deals')
+    const { data, error } = await (supabase.from('deals') as any)
         .select(`
             *,
             client:clients(id, nome),
@@ -29,8 +28,7 @@ export async function getDealById(id: string) {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { data, error } = await supabase
-        .from('deals')
+    const { data, error } = await (supabase.from('deals') as any)
         .select(`
             *,
             client:clients(*),
@@ -75,7 +73,7 @@ export async function createDeal(formData: FormData) {
     }
 
     // @ts-ignore
-    const { error } = await supabase.from('deals').insert(dealData)
+    const { error } = await (supabase.from('deals') as any).insert(dealData)
 
     if (error) {
         console.error("Error creating deal:", error)
@@ -101,7 +99,7 @@ export async function updateDealStatus(id: string, status: string, motivoPerda?:
     }
 
     // @ts-ignore
-    const { error } = await supabase.from('deals').update(updateData).eq('id', id)
+    const { error } = await (supabase.from('deals') as any).update(updateData).eq('id', id)
 
     if (error) {
         console.error("Error updating deal:", error)
@@ -116,7 +114,7 @@ export async function deleteDeal(id: string) {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { error } = await supabase.from('deals').delete().eq('id', id)
+    const { error } = await (supabase.from('deals') as any).delete().eq('id', id)
 
     if (error) {
         console.error("Error deleting deal:", error)

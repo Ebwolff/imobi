@@ -7,8 +7,7 @@ export async function getProperties() {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { data, error } = await supabase
-        .from('properties')
+    const { data, error } = await (supabase.from('properties') as any)
         .select('*')
         .order('created_at', { ascending: false })
 
@@ -24,8 +23,7 @@ export async function getPropertyById(id: string) {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { data, error } = await supabase
-        .from('properties')
+    const { data, error } = await (supabase.from('properties') as any)
         .select('*')
         .eq('id', id)
         .single()
@@ -65,7 +63,7 @@ export async function createProperty(formData: FormData) {
     }
 
     // @ts-ignore
-    const { error } = await supabase.from('properties').insert(propertyData)
+    const { error } = await (supabase.from('properties') as any).insert(propertyData)
 
     if (error) {
         console.error("Error creating property:", error)
@@ -97,7 +95,7 @@ export async function updateProperty(id: string, formData: FormData) {
     }
 
     // @ts-ignore
-    const { error } = await supabase.from('properties').update(propertyData).eq('id', id)
+    const { error } = await (supabase.from('properties') as any).update(propertyData).eq('id', id)
 
     if (error) {
         console.error("Error updating property:", error)
@@ -112,7 +110,7 @@ export async function deleteProperty(id: string) {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { error } = await supabase.from('properties').delete().eq('id', id)
+    const { error } = await (supabase.from('properties') as any).delete().eq('id', id)
 
     if (error) {
         console.error("Error deleting property:", error)

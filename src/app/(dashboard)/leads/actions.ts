@@ -64,7 +64,7 @@ export async function createLead(formData: FormData) {
     const tenantId = await getCurrentTenantId()
 
     // @ts-ignore - tenant_id column exists but types not regenerated
-    const { error } = await supabase.from('leads').insert({
+    const { error } = await (supabase.from('leads') as any).insert({
         name,
         phone,
         stage_id: stageId,
@@ -85,8 +85,7 @@ export async function updateLeadStage(leadId: string, stageId: string) {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { error } = await supabase
-        .from('leads')
+    const { error } = await (supabase.from('leads') as any)
         .update({ stage_id: stageId })
         .eq('id', leadId)
 

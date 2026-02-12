@@ -7,8 +7,7 @@ export async function getTasks(filter?: 'all' | 'today' | 'overdue' | 'pending')
     const supabase = await createClient()
 
     // @ts-ignore
-    let query = supabase
-        .from('tasks')
+    let query = (supabase.from('tasks') as any)
         .select(`
             *,
             client:clients(id, nome),
@@ -59,7 +58,7 @@ export async function createTask(formData: FormData) {
     }
 
     // @ts-ignore
-    const { error } = await supabase.from('tasks').insert(taskData)
+    const { error } = await (supabase.from('tasks') as any).insert(taskData)
 
     if (error) {
         console.error("Error creating task:", error)
@@ -74,7 +73,7 @@ export async function completeTask(id: string) {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { error } = await supabase.from('tasks').update({
+    const { error } = await (supabase.from('tasks') as any).update({
         status: 'concluida',
         data_conclusao: new Date().toISOString()
     }).eq('id', id)
@@ -92,7 +91,7 @@ export async function deleteTask(id: string) {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { error } = await supabase.from('tasks').delete().eq('id', id)
+    const { error } = await (supabase.from('tasks') as any).delete().eq('id', id)
 
     if (error) {
         console.error("Error deleting task:", error)

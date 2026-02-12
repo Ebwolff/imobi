@@ -60,7 +60,7 @@ export async function createClientRecord(formData: FormData) {
     }
 
     // @ts-ignore
-    const { error } = await supabase.from('clients').insert(clientData)
+    const { error } = await (supabase.from('clients') as any).insert(clientData)
 
     if (error) {
         console.error("Error creating client:", error)
@@ -89,7 +89,7 @@ export async function updateClientRecord(id: string, formData: FormData) {
     }
 
     // @ts-ignore
-    const { error } = await supabase.from('clients').update(clientData).eq('id', id)
+    const { error } = await (supabase.from('clients') as any).update(clientData).eq('id', id)
 
     if (error) {
         console.error("Error updating client:", error)
@@ -104,7 +104,7 @@ export async function deleteClientRecord(id: string) {
     const supabase = await createSupabaseClient()
 
     // @ts-ignore
-    const { error } = await supabase.from('clients').delete().eq('id', id)
+    const { error } = await (supabase.from('clients') as any).delete().eq('id', id)
 
     if (error) {
         console.error("Error deleting client:", error)
@@ -136,7 +136,7 @@ export async function convertLeadToClient(leadId: string) {
 
     // Create client from lead
     // @ts-ignore
-    const { error } = await supabase.from('clients').insert({
+    const { error } = await (supabase.from('clients') as any).insert({
         user_id: userData?.user?.id || null,
         lead_id: leadId,
         nome: (lead as any).name,
