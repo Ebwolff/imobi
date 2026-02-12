@@ -42,8 +42,8 @@ export async function getTenantStats() {
     const { count: totalLeads } = await (supabase.from('leads') as any)
         .select('*', { count: 'exact', head: true })
 
-    const active = tenants?.filter(t => t.status === 'ativo').length || 0
-    const suspended = tenants?.filter(t => t.status === 'suspenso').length || 0
+    const active = tenants?.filter((t: any) => t.status === 'ativo').length || 0
+    const suspended = tenants?.filter((t: any) => t.status === 'suspenso').length || 0
     const total = tenants?.length || 0
 
     return {

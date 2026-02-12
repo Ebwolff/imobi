@@ -66,8 +66,7 @@ export function LeadDetailsSheet({ leadId, open, onOpenChange }: { leadId: strin
 
     async function fetchLeadDetails(id: string) {
         setLoading(true)
-        const { data, error } = await supabase
-            .from('leads')
+        const { data, error } = await (supabase.from('leads') as any)
             .select('*')
             .eq('id', id)
             .single()
@@ -82,8 +81,7 @@ export function LeadDetailsSheet({ leadId, open, onOpenChange }: { leadId: strin
     }
 
     async function fetchInteractions(id: string) {
-        const { data } = await supabase
-            .from('interactions')
+        const { data } = await (supabase.from('interactions') as any)
             .select('*')
             .eq('lead_id', id)
             .order('created_at', { ascending: false })
@@ -95,8 +93,7 @@ export function LeadDetailsSheet({ leadId, open, onOpenChange }: { leadId: strin
         if (!lead) return
         setSaving(true)
 
-        const { error } = await supabase
-            .from('leads')
+        const { error } = await (supabase.from('leads') as any)
             .update({
                 name: lead.name,
                 phone: lead.phone,
