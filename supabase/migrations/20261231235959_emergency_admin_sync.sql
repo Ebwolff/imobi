@@ -1,0 +1,2 @@
+-- Placeholder to match remote migration history
+-- This migration was previously applied and then removed locally.
