@@ -11,8 +11,7 @@ export async function getAllTenants() {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { data, error } = await supabase
-        .from('tenants')
+    const { data, error } = await (supabase.from('tenants') as any)
         .select(`
             *,
             subscriptions (
@@ -36,13 +35,11 @@ export async function getTenantStats() {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { data: tenants } = await supabase
-        .from('tenants')
+    const { data: tenants } = await (supabase.from('tenants') as any)
         .select('id, status', { count: 'exact' })
 
     // @ts-ignore
-    const { count: totalLeads } = await supabase
-        .from('leads')
+    const { count: totalLeads } = await (supabase.from('leads') as any)
         .select('*', { count: 'exact', head: true })
 
     const active = tenants?.filter(t => t.status === 'ativo').length || 0
@@ -79,8 +76,7 @@ export async function createTenant(formData: FormData) {
         .replace(/(^-|-$)/g, '')
 
     // @ts-ignore
-    const { data, error } = await supabase
-        .from('tenants')
+    const { data, error } = await (supabase.from('tenants') as any)
         .insert({
             nome_empresa,
             email_principal,
@@ -108,8 +104,7 @@ export async function updateTenantStatus(tenantId: string, status: string) {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { error } = await supabase
-        .from('tenants')
+    const { error } = await (supabase.from('tenants') as any)
         .update({ status, updated_at: new Date().toISOString() })
         .eq('id', tenantId)
 
@@ -130,8 +125,7 @@ export async function getPlans() {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { data, error } = await supabase
-        .from('plans')
+    const { data, error } = await (supabase.from('plans') as any)
         .select('*')
         .order('valor_mensal')
 
@@ -158,8 +152,7 @@ export async function createPlan(formData: FormData) {
     const slug = nome.toLowerCase().replace(/\s+/g, '-')
 
     // @ts-ignore
-    const { error } = await supabase
-        .from('plans')
+    const { error } = await (supabase.from('plans') as any)
         .insert({
             nome,
             slug,
@@ -185,8 +178,7 @@ export async function getAuditLogs(limit = 50) {
     const supabase = await createClient()
 
     // @ts-ignore
-    const { data, error } = await supabase
-        .from('audit_logs')
+    const { data, error } = await (supabase.from('audit_logs') as any)
         .select(`
             *,
             tenants (nome_empresa)
@@ -212,7 +204,7 @@ export async function logAction(
     const supabase = await createClient()
 
     // @ts-ignore
-    await supabase.from('audit_logs').insert({
+    await (supabase.from('audit_logs') as any).insert({
         acao,
         entidade,
         entidade_id,

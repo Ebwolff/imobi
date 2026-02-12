@@ -20,38 +20,32 @@ async function getDashboardData() {
     const supabase = await createClient()
 
     // Get leads count
-    const { count: totalLeads } = await supabase
-        .from('leads')
+    const { count: totalLeads } = await (supabase.from('leads') as any)
         .select('*', { count: 'exact', head: true })
 
     // Get new leads (this week)
     const weekAgo = new Date()
     weekAgo.setDate(weekAgo.getDate() - 7)
-    const { count: newLeads } = await supabase
-        .from('leads')
+    const { count: newLeads } = await (supabase.from('leads') as any)
         .select('*', { count: 'exact', head: true })
         .gte('created_at', weekAgo.toISOString())
 
     // Get clients count
-    const { count: totalClients } = await supabase
-        .from('clients')
+    const { count: totalClients } = await (supabase.from('clients') as any)
         .select('*', { count: 'exact', head: true })
 
     // Get deals count
-    const { count: totalDeals } = await supabase
-        .from('deals')
+    const { count: totalDeals } = await (supabase.from('deals') as any)
         .select('*', { count: 'exact', head: true })
 
     // Get recent leads
-    const { data: recentLeads } = await supabase
-        .from('leads')
+    const { data: recentLeads } = await (supabase.from('leads') as any)
         .select('*')
         .order('created_at', { ascending: false })
         .limit(5)
 
     // Get tasks (incomplete)
-    const { data: pendingTasks, count: pendingCount } = await supabase
-        .from('tasks')
+    const { data: pendingTasks, count: pendingCount } = await (supabase.from('tasks') as any)
         .select('*', { count: 'exact' })
         .eq('status', 'pendente')
         .order('data_vencimento', { ascending: true })

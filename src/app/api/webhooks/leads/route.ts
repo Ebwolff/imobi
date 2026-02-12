@@ -34,13 +34,11 @@ export async function POST(request: Request) {
 
         // Get default pipeline stage (New Lead)
         // Ideally cache this or pass as param
-        const { data: pipeline } = await supabaseAdmin
-            .from('pipelines')
+        const { data: pipeline } = await (supabaseAdmin.from('pipelines') as any)
             .select('id')
             .single()
 
-        const { data: stage } = await supabaseAdmin
-            .from('pipeline_stages')
+        const { data: stage } = await (supabaseAdmin.from('pipeline_stages') as any)
             .select('id')
             .eq('pipeline_id', pipeline?.id)
             .order('position')
@@ -48,8 +46,7 @@ export async function POST(request: Request) {
             .single()
 
         // Insert Lead
-        const { data, error } = await supabaseAdmin
-            .from('leads')
+        const { data, error } = await (supabaseAdmin.from('leads') as any)
             .insert({
                 name: validatedData.name,
                 phone: validatedData.phone,
