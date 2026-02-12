@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { ArrowLeft, Save, Loader2, CreditCard } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
-import { createPlan } from "../../actions"
+import { createPlan } from "@/app/admin-saas/actions"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 

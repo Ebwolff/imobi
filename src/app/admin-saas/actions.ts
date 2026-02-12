@@ -2,6 +2,29 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
+
+export async function checkSaaSAdmin() {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+        redirect('/admin-saas/login')
+    }
+
+    // Check if user is in saas_users with correct role
+    const { data: saasUser, error } = await (supabase.from('saas_users') as any)
+        .select('role')
+        .eq('id', user.id)
+        .single()
+
+    if (error || !saasUser || !['owner', 'admin_saas', 'suporte'].includes(saasUser.role)) {
+        // If not a global admin, redirect to CRM main page
+        redirect('/')
+    }
+
+    return user
+}
 
 // =============================================
 // TENANT MANAGEMENT (Admin Only)

@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Save, Loader2, Building2 } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
-import { createTenant } from "../../actions"
+import { createTenant } from "@/app/admin-saas/actions"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 

@@ -38,14 +38,28 @@ export async function middleware(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser();
 
-    // Redirect unauthenticated users to login if trying to access protected routes
-    if (!user && !request.nextUrl.pathname.startsWith("/auth")) {
+    const isAuthPage = request.nextUrl.pathname.startsWith("/auth");
+    const isAdminSaasPage = request.nextUrl.pathname.startsWith("/admin-saas");
+    const isAdminSaasLoginPage = request.nextUrl.pathname === "/admin-saas/login";
+
+    // 1. CRM Protection (Default)
+    if (!user && !isAuthPage && !isAdminSaasPage) {
         return NextResponse.redirect(new URL("/auth/login", request.url));
     }
 
-    // Redirect authenticated users away from auth pages
-    if (user && request.nextUrl.pathname.startsWith("/auth")) {
-        return NextResponse.redirect(new URL("/", request.url));
+    // 2. Admin SaaS Protection
+    if (!user && isAdminSaasPage && !isAdminSaasLoginPage) {
+        return NextResponse.redirect(new URL("/admin-saas/login", request.url));
+    }
+
+    // 3. Redirect away from auth pages if logged in
+    if (user) {
+        if (isAuthPage) {
+            return NextResponse.redirect(new URL("/", request.url));
+        }
+        if (isAdminSaasLoginPage) {
+            return NextResponse.redirect(new URL("/admin-saas", request.url));
+        }
     }
 
     return response;

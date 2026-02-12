@@ -29,6 +29,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { logoutSaas } from "./auth-actions"
 
 const navItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/admin-saas" },
@@ -40,9 +41,18 @@ const navItems = [
     { icon: Settings, label: "Configurações", href: "/admin-saas/settings" },
 ]
 
-export default function AdminSaasLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayoutClient({
+    children,
+    userEmail
+}: {
+    children: React.ReactNode,
+    userEmail?: string
+}) {
     const pathname = usePathname()
     const [collapsed, setCollapsed] = useState(false)
+
+    // Don't show layout on login page
+    if (pathname === '/admin-saas/login') return <>{children}</>
 
     return (
         <div className="flex h-screen bg-zinc-950">
@@ -56,13 +66,13 @@ export default function AdminSaasLayout({ children }: { children: React.ReactNod
                     "h-14 flex items-center border-b border-zinc-800/50 transition-all",
                     collapsed ? "px-3 justify-center" : "px-4 gap-3"
                 )}>
-                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center flex-shrink-0">
                         <Shield className="h-4 w-4 text-white" />
                     </div>
                     {!collapsed && (
                         <div className="overflow-hidden">
-                            <h1 className="font-semibold text-white text-sm">CRM Platform</h1>
-                            <p className="text-[10px] text-zinc-500 font-medium">Admin Console</p>
+                            <h1 className="font-semibold text-white text-sm">SaaS Master</h1>
+                            <p className="text-[10px] text-zinc-500 font-medium">Control Plane</p>
                         </div>
                     )}
                 </div>
@@ -79,7 +89,7 @@ export default function AdminSaasLayout({ children }: { children: React.ReactNod
                                         "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                                         collapsed && "justify-center",
                                         isActive
-                                            ? "bg-zinc-800 text-white"
+                                            ? "bg-amber-500/10 text-amber-500"
                                             : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
                                     )}
                                     title={collapsed ? item.label : undefined}
@@ -133,32 +143,36 @@ export default function AdminSaasLayout({ children }: { children: React.ReactNod
                         {/* Notifications */}
                         <Button variant="ghost" size="icon" className="h-9 w-9 text-zinc-400 hover:text-white relative">
                             <Bell className="h-4 w-4" />
-                            <span className="absolute top-2 right-2 h-2 w-2 bg-emerald-500 rounded-full" />
+                            <span className="absolute top-2 right-2 h-2 w-2 bg-amber-500 rounded-full" />
                         </Button>
 
                         {/* User Menu */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="h-9 px-2 gap-2 text-zinc-400 hover:text-white">
-                                    <div className="h-7 w-7 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
-                                        <span className="text-white font-semibold text-xs">O</span>
+                                    <div className="h-7 w-7 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center">
+                                        <span className="text-amber-500 font-semibold text-xs">M</span>
                                     </div>
-                                    <span className="text-sm font-medium hidden md:block">Owner</span>
+                                    <span className="text-sm font-medium hidden md:block">Master Admin</span>
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-56 bg-zinc-900 border-zinc-800">
                                 <DropdownMenuLabel className="text-zinc-400">
-                                    admin@crm.com
+                                    {userEmail || 'admin@master.com'}
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator className="bg-zinc-800" />
                                 <DropdownMenuItem className="text-zinc-300 focus:bg-zinc-800 cursor-pointer">
                                     <Settings className="h-4 w-4 mr-2" />
                                     Configurações
                                 </DropdownMenuItem>
-                                <DropdownMenuItem className="text-rose-400 focus:bg-zinc-800 cursor-pointer">
-                                    <LogOut className="h-4 w-4 mr-2" />
-                                    Sair
-                                </DropdownMenuItem>
+                                <form action={logoutSaas}>
+                                    <DropdownMenuItem className="text-rose-400 focus:bg-zinc-800 cursor-pointer p-0">
+                                        <button className="flex items-center w-full px-2 py-1.5 h-full">
+                                            <LogOut className="h-4 w-4 mr-2" />
+                                            Sair
+                                        </button>
+                                    </DropdownMenuItem>
+                                </form>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>

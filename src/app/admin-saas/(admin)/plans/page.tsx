@@ -1,4 +1,4 @@
-import { getPlans } from "../actions"
+import { getPlans } from "@/app/admin-saas/actions"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
